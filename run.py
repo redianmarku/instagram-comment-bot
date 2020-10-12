@@ -11,6 +11,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
+from credentials import username as usr, password as passw
 
 
 class Bot:
@@ -22,7 +23,9 @@ class Bot:
         profile.set_preference("general.useragent.override", user_agent)
         self.bot = webdriver.Firefox(profile)
         self.bot.set_window_size(500, 950)
-        self.tags = ['python', 'javascript', 'java', 'coding', 'programming', 'computer', 'setup', '100DaysOfCode', 'react']
+        with open(r'tags.txt', 'r') as f:
+            tagsl = [line.strip() for line in f]
+        self.tags = tagsl
         self.urls = []
 
     def exit(self):
@@ -97,7 +100,8 @@ class Bot:
         bot.execute_script("window.scrollTo(0, window.scrollY + 300)")
         time.sleep(2)
 
-        bot.find_element_by_xpath('/html/body/div[1]/section/main/div/div/article/div[3]/section[1]/span[1]/button').click()
+        bot.find_element_by_xpath(
+            '/html/body/div[1]/section/main/div/div/article/div[3]/section[1]/span[1]/button').click()
         time.sleep(2)
 
         bot.find_element_by_xpath(
@@ -126,19 +130,18 @@ class Bot:
         WebDriverWait(bot, 50).until(
             EC.element_to_be_clickable(find_post_button))
         post_button.click()
-        time.sleep(10)
+
+        # edit this line to make bot faster
+        time.sleep(5)
+        # ---------------------------------
+
         return run.comment(random_comment())
 
 
 def random_comment():
-    comments = [
-        'Nice post',
-        'Wooow I love it!',
-        'I like it',
-        'Gorgeous!',
-        'Good job'
-
-    ]
+    with open(r'comments.txt', 'r') as f:
+        commentsl = [line.strip() for line in f]
+    comments = commentsl
     comment = random.choice(comments)
     return comment
 
@@ -152,7 +155,7 @@ def check_exists_by_xpath(driver, xpath):
     return False
 
 
-run = Bot('redi.dev', '@realitet1')
+run = Bot(usr, passw)
 run.login()
 
 if __name__ == '__main__':
