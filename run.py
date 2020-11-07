@@ -36,6 +36,14 @@ class Bot:
         bot = self.bot
         bot.get('https://instagram.com/')
         time.sleep(5)
+
+        if check_exists_by_xpath(bot, "//button[text()='Accept']"):
+            print("No cookies")
+        else:
+            bot.find_element_by_xpath("//button[text()='Accept']").click()
+            print("Accepted cookies")
+
+        time.sleep(4)
         bot.find_element_by_xpath(
             '/html/body/div[1]/section/main/article/div/div/div/div[2]/button').click()
         print("Logging in...")
