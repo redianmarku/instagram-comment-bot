@@ -12,6 +12,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 from credentials import username as usr, password as passw
+from webdriver_manager.firefox import GeckoDriverManager as GM
 
 
 class Bot:
@@ -21,7 +22,7 @@ class Bot:
         user_agent = "Mozilla/5.0 (iPhone; U; CPU iPhone OS 3_0 like Mac OS X; en-us) AppleWebKit/528.18 (KHTML, like Gecko) Version/4.0 Mobile/7A341 Safari/528.16"
         profile = webdriver.FirefoxProfile()
         profile.set_preference("general.useragent.override", user_agent)
-        self.bot = webdriver.Firefox(profile)
+        self.bot = webdriver.Firefox(profile, executable_path=GM().install())
         self.bot.set_window_size(500, 950)
         with open(r'tags.txt', 'r') as f:
             tagsl = [line.strip() for line in f]
@@ -35,6 +36,8 @@ class Bot:
     def login(self):
         bot = self.bot
         bot.get('https://instagram.com/')
+        time.sleep(3)
+        bot.find_element_by_xpath('/html/body/div[1]/section/main/article/div/div/div/div[3]/button[1]').click()
         time.sleep(5)
 
         if check_exists_by_xpath(bot, "//button[text()='Accept']"):
@@ -44,8 +47,6 @@ class Bot:
             print("Accepted cookies")
 
         time.sleep(4)
-        bot.find_element_by_xpath(
-            '/html/body/div[1]/section/main/article/div/div/div/div[2]/button').click()
         print("Logging in...")
         time.sleep(1)
         username_field = bot.find_element_by_xpath(
